@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Catinator.conf.xml
+
+	Copyright 2016 James M. Coulthard <james.m.coulthard@gmail.com>
+
+	This XMl file contains the configuration for the Catinator
+	Application. This file is read by all app processes, including event
+	handlers, GPIO readers, CGI processes, etc, etc...  The intent
+	of the file is to capture the entire config of a single instance of
+	the Catinator trap system (tm).
+
+	Most entries in the conf file are self explanatory.  Where not
+	explanatory, a brief description of the configuration entry and
+	usage is provided.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+	MA 02110-1301, USA.
+
+
+-->
+
+<Catinator series="001">   <!-- Catinator series number designates
+	application version -->
+
+	<hardware model="102"> <!-- Model number should designate number of
+		trap doors, eg. 101 = 1 doors, 102 = 2 doors, etc... -->
+		<platform>rpi3</platform>  <!-- values = rpi0, rpiA, rpiB, rpi2,
+		rpi3, etc... -->
+		<trapdoors>
+			<door number="1">	   <!-- Door identifier -->
+				<gpio>33</gpio>    <!-- rpi GPIO pin number in BOARD mode -->
+				<up_down>UP</up_down>  <!-- pull up/down resistor -->
+			</door>               
+			<door number="2">	   <!-- Can be N number of doors... -->
+				<gpio>40</gpio>
+				<up_down>UP</up_down>				
+			</door>
+		</trapdoors>
+		<sleep>2</sleep>	<!-- interval between door state reads -->
+		<state>/var/run/catinatord.state</state> <!-- path to state file -->
+		<interfaces>				<!-- defines possible interfaces -->
+			<eth0>TRUE</eth0>		<!-- Ethernet is always true  -->
+			<wlan0>TRUE</wlan0>		<!-- Must be true to use wifi -->
+			<usbmodem>FALSE</usbmodem> <!-- Must be true to use 3g -->
+			<!-- NOTE: The system gives preference to wlan0, and will
+			use it over the usbmodem unless disabled (FALSE)  -->
+		</interfaces>
+		<camera id="generic_usb">TRUE</camera>
+		<battery>		<!-- Simply informs of battery capacity -->
+			<installed>TRUE</installed>
+			<capacity unit="mah">8000</capacity>
+		</battery>
+		<power_saving>		<!-- USB power management option -->
+			<night_mode>FALSE</night_mode>  <!-- TRUE or FALSE -->
+								<!-- FALSE means USB is always -->
+								<!-- powered on -->
+								<!-- TRUE means USB comes on only -->
+								<!-- to take a picture.  No live video -->
+			<!-- external USB devices can be managed by these
+				commands -->
+			<power_off>sudo /usr/bin/hub-ctrl -h 0 -P 2 -p 0</power_off>
+			<power_on>sudo /usr/bin/hub-ctrl -h 0 -P 2 -p 1</power_on>
+			<!-- Power off and on command strings can change
+					depedent upon hardware in use -->
+			<sleep_timer>10</sleep_timer> <!-- USB power sleep timer -->
+		</power_saving>
+	</hardware>
+
+	<required_services>  <!-- system service dependencies -->
+		<depend>debian.noip2.sh</depend>  	<!-- DDNS -->
+		<depend>sendmail</depend>			<!-- for notifications -->
+		<depend>motion</depend>				<!-- camera streaming -->
+		<depend>apache2</depend>			<!-- http admin interface -->
+		<depend>ssh</depend>				<!-- cli admin interface -->
+		<depend>networking</depend>			<!-- network access -->
+		<depend>rsyslog</depend>			<!-- syslog logging -->
+		<depend>ufw</depend>				<!-- firewall -->
+		<depend>ntp</depend>				<!-- external time -->
+	</required_services>
+
+	<hostinfo>					<!-- System hostname and user -->
+		<hostname_>catinator</hostname_>
+		<domain_>sytes.net</domain_>
+		<user>pi</user>
+		<pass>raspberry</pass>
+	</hostinfo>
+
+	<networking>  	<!-- This section is self explanatory -->
+					<!-- ip_addr of "DHCP" will use dhcp for ip -->
+
+		<eth0_>		<!-- eth0 defaults to 192.168.0.2 for -->
+					<!-- initial configuration purposes. DO NOT CHANGE -->
+			<ip_addr>192.168.0.2</ip_addr>
+			<netmask>255.255.255.0</netmask>
+			<gateway>192.168.0.1</gateway>
+			<dns>8.8.8.8</dns>
+		</eth0_>
+
+		<wlan0_>		<!-- May be set by end user -->
+			<ip_addr>DHCP</ip_addr>
+			<netmask></netmask>
+			<gateway></gateway>
+			<dns></dns>
+			<SSID>coulthard_network</SSID>
+			<psk type="wpa2">hokiedog1</psk>  <!-- wep, wpa, or wpa2 -->
+		</wlan0_>
+
+		<usbmodem_>	<!-- May be set by end user -->
+			<ip_addr>DHCP</ip_addr>
+			<netmask></netmask>
+			<gateway></gateway>
+			<dns></dns>
+		</usbmodem_>
+	</networking>
+
+	<sakis3g>					<!-- sakis3g script is used for 3g -->
+		<OTHER>USBMODEM</OTHER>	<!-- usbmodem is also an interface -->
+		<USBMODEM__>19d2:0117</USBMODEM__>
+		<APN>wap.cingular</APN>
+		<APN_USER>wap.cingulargprs.com</APN_USER>
+		<APN_PASS>CINGULAR1</APN_PASS>
+	</sakis3g>
+
+	<DDNS>						<!-- configure DDNS update -->
+		<hostname>catinator</hostname>  <!-- does not need to equal -->
+		<domain>sytes.net</domain>		<!-- hostinfo -->
+		<provider>noip</provider>
+		<login>james.coulthard@verizon.net</login>
+		<pass>Probese1</pass>
+		<dummy_ip>127.0.0.1</dummy_ip>	<!-- specific to no-ip.com -->
+	</DDNS>
+
+	<camera_>			
+		<capture_file>/home/pi/projects/Catenatitor/images/catpic.jpg</capture_file>
+		<nopic_file>/home/pi/projects/Catenatitor/images/nopic.jpg</nopic_file>  <!-- used when camera is disabled -->
+		<motion_url>http://127.0.0.1:8081/</motion_url>
+		<content_identifier>Content-Length</content_identifier>
+		<scan_buffer>1024</scan_buffer>
+	</camera_>
+
+	<notifications>		
+		<from>catinator@catinator.sytes.net</from>   <!-- populates From: email header  -->
+		<attach_token>Picture is attached</attach_token>  <!-- for use by template mgr -->
+		<condition>				<!-- select which conditions to receive -->
+			<armed>TRUE</armed> <!-- as notifications. Default is CLOSED only. -->
+			<closed>TRUE</closed>
+			<jammed>TRUE</jammed>		
+		</condition>
+		<addr_list type="email">
+		<!--	<addr>james.coulthard@verizon.net</addr> -->
+			<addr>james.coulthard@amdocs.com</addr>
+		<!--	<addr>victoria.coulthard@gmail.com</addr> -->
+		</addr_list>
+		<addr_list type="sms">
+			<addr>8043378104@txt.att.net</addr>
+		<!--	<addr>7576941607@txt.att.net</addr> -->
+		</addr_list>
+		<addr_list type="smartphone">
+		</addr_list>		<!-- Disabled, TO BE DONE -->
+		<target addr="email" type="html" enabled="TRUE">
+			<armed>/home/pi/Desktop/Catenatitor/catinator_armed.xhtml</armed>     
+			<closed>/home/pi/Desktop/Catenatitor/catinator_closed.xhtml</closed>			<!-- path to template file -->
+			<jammed>/home/pi/Desktop/Catenatitor/catinator_jammed.xhtml</jammed>
+		</target>
+		<target addr="email" type="plain" enabled="TRUE">
+			<armed>/home/pi/Desktop/Catenatitor/armed_notification_template.email</armed>   
+			<closed>/home/pi/Desktop/Catenatitor/closed_notification_template.email</closed>			<!-- path to template file -->
+			<jammed>/home/pi/Desktop/Catenatitor/jammed_notification_template.email</jammed>
+		</target>
+		<target addr="sms" type="plain" enabled="TRUE">  <!-- sms use plain type template -->
+			<armed>/home/pi/Desktop/Catenatitor/armed_notification_template.sms</armed>   
+			<closed>/home/pi/Desktop/Catenatitor/closed_notification_template.sms</closed>			<!-- path to template file -->
+			<jammed>/home/pi/Desktop/Catenatitor/jammed_notification_template.sms</jammed>
+		</target>
+		<target addr = "smartphone" type = "smart" enabled = "FALSE">	
+		</target>		<!-- Disabled, TO BE DONE -->
+	</notifications>
+
+	
+	<logs>  <!-- Path to logging configuration -->
+		<logconf>/home/pi/projects/Catenatitor/catinator.log.conf</logconf>
+	</logs>
+
+</Catinator>

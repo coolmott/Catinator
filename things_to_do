@@ -1,0 +1,45 @@
+*Ready for live test*
+
+code to write:
+-- We are ready to test on h/w chassis...
+-- Build Completed; tested and confirmed operationl on WLAN0
+
+-- Design picture file rotation  <-- rotate picture from catcam.take_picture; read in config from xml
+
+-- create actual html, email, and sms templates
+--	Create images of ARMED, CLOSED, JAMMED
+--	add in power or other system states to notifications?
+
+-- Fix zombie sendmail child processes
+--	created light weight threads to spawn SMTP connections to 127.0.0.1::25 (sendmail); actually works well
+
+-- create catinator dir structure: done
+--	/etc/catinator/templates/images <-- copied all images: jpg and png
+--	/etc/catinator/templates <-- copied all templates, sms, email, and xhtml
+--	/etc/catinator <-- copied all .conf
+--	/etc/init.d <-- updated; now points to /usr/bin
+--	/usr/bin <-- copied *.py scripts here and modified to executable; modified cat_global.py to point to /usr/bin
+--	/var/run <-- used for pid
+--	/var/log/catinator <-- chmodded to root:adm
+
+-- crontabs to clean up motion files and logs?
+--	Script exists in /usr/bin; installed in crontab to run every 4 hours
+
+-- investigate/fix from address spoofing (???)
+-- Must use an open SNMP server to see proper from: addr
+
+
+
+to design:
+finish interface class  <-- HARDER
+
+DDNS class  <-- hard
+
+put interfaces and DDNS in init  <-- medium  (need to rethink...)
+
+clean up syslog format <-- Easiest
+
+start admin interface design <-- HARD
+
+create catinator pkg and pre-install and post-install scripts <-- very, very LAST, hard
+	must install services, apache, admin web pages, and beautiful soup html parser dependencies
