@@ -2,28 +2,28 @@
 # -*- coding: utf-8 -*-
 #
 #  cat_global.py
-#  
+#
 #  Copyright 2016 James M. Coulthard <james.m.coulthard@gmail.com>
-#  
+#
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 2 of the License, or
 #  (at your option) any later version.
-#  
+#
 #  This program is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
-#  
+#
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
-#  
-#  
+#
+#
 
 #Constants
-path_to_catinatord		= "/usr/bin/catinatord.py"
+path_to_catinatord		= "/usr/local/bin/catinatord.py"
 path_to_catinator_pid	= "/var/run/catinatord.py.pid"
 tag_line				= "Come with me if you want to meow!!"
 tag_line2				= "Hasta la vista, baby!"
@@ -72,7 +72,7 @@ def int32(x):
 	return (x)
 
 def main():
-	
+
 	return 0
 
 if __name__ == '__main__':
